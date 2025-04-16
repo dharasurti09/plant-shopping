@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plant Shop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-50 font-sans">
+  <header class="bg-green-700 text-white p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold">🌿 Plant Shop</h1>
+    <div>
+      <button onclick="openModal('loginModal')" class="mr-4">Login</button>
+      <button onclick="openModal('signupModal')" class="mr-4">Create Account</button>
+      <button onclick="toggleCart()">🛒 (<span id="cart-count">0</span>)</button>
+    </div>
+  </header>
+
+  <!-- Plant List -->
+  <main class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="plant-list">
+    <!-- JS will inject plants here -->
+  </main>
+
+  <!-- Cart Section -->
+  <div id="cart" class="fixed right-0 top-0 w-80 h-full bg-white shadow-2xl p-4 overflow-auto hidden">
+    <h2 class="text-xl font-bold mb-4">Your Cart</h2>
+    <div id="cart-items"></div>
+    <p class="mt-4 font-semibold">Total: $<span id="cart-total">0</span></p>
+    <button onclick="checkout()" class="mt-4 bg-green-700 text-white px-4 py-2 rounded">Checkout</button>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-content">
+      <h2 class="text-xl font-bold mb-2">Login</h2>
+      <input type="email" placeholder="Email" class="input" />
+      <input type="password" placeholder="Password" class="input" />
+      <button class="btn">Login</button>
+      <button onclick="closeModal('loginModal')" class="text-sm mt-2 text-gray-500">Close</button>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div id="signupModal" class="modal hidden">
+    <div class="modal-content">
+      <h2 class="text-xl font-bold mb-2">Create Account</h2>
+      <input type="text" placeholder="Name" class="input" />
+      <input type="email" placeholder="Email" class="input" />
+      <input type="password" placeholder="Password" class="input" />
+      <button class="btn">Create Account</button>
+      <button onclick="closeModal('signupModal')" class="text-sm mt-2 text-gray-500">Close</button>
+    </div>
+  </div>
+
+  <style>
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      width: 90%;
+      max-width: 400px;
+    }
+    .input {
+      display: block;
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 0.25rem;
+    }
+    .btn {
+      background-color: #047857;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      margin-top: 0.5rem;
+    }
+  </style>
+
+  <script>
+    const plants = [
+      { id: 1, name: "Monstera", price: 25, image: "https://via.placeholder.com/150" },
+      { id: 2, name: "Snake Plant", price: 18, image: "https://via.placeholder.com/150" },
+      { id: 3, name: "Peace Lily", price: 22, image: "https://via.placeholder.com/150" },
+    ];
+
+    const cart = [];
+
+    function renderPlants() {
+      const container = document.getElementById("plant-list");
+      container.innerHTML = "";
+      plants.forEach(plant => {
+        const card = document.createElement("div");
+        card.className = "bg-white p-4 rounded shadow";
+        card.innerHTML = `
+          <img src="${plant.image}" alt="${plant.name}" class="w-full h-40 object-cover rounded" />
+          <h3 class="text-lg font-semibold mt-2">${plant.name}</h3>
+          <p>$${plant.price}</p>
+          <button onclick="addToCart(${plant.id})" class="mt-2 bg-green-700 text-white px-3 py-1 rounded">Add to Cart</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function addToCart(id) {
+      const plant = plants.find(p => p.id === id);
+      cart.push(plant);
+      updateCart();
+    }
+
+    function updateCart() {
+      document.getElementById("cart-count").innerText = cart.length;
+      const cartItems = document.getElementById("cart-items");
+      cartItems.innerHTML = "";
+      let total = 0;
+      cart.forEach((item, index) => {
+        total += item.price;
+        const div = document.createElement("div");
+        div.className = "flex justify-between mb-2";
+        div.innerHTML = `
+          <span>${item.name}</span>
+          <span>$${item.price}</span>
+        `;
+        cartItems.appendChild(div);
+      });
+      document.getElementById("cart-total").innerText = total.toFixed(2);
+    }
+
+    function toggleCart() {
+      document.getElementById("cart").classList.toggle("hidden");
+    }
+
+    function checkout() {
+      alert("Checkout complete! Thank you for your order.");
+      cart.length = 0;
+      updateCart();
+      toggleCart();
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove("hidden");
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add("hidden");
+    }
+
+    renderPlants();
+  </script>
+</body>
+</html>
