@@ -44,10 +44,10 @@
   <div id="signupModal" class="modal hidden">
     <div class="modal-content">
       <h2 class="text-xl font-bold mb-2">Create Account</h2>
-      <input type="text" placeholder="Name" class="input" />
-      <input type="email" placeholder="Email" class="input" />
-      <input type="password" placeholder="Password" class="input" />
-      <button class="btn">Create Account</button>
+      <input id="signup-name" type="text" placeholder="Name" class="input" />
+      <input id="signup-email" type="email" placeholder="Email" class="input" />
+      <input id="signup-password" type="password" placeholder="Password" class="input" />
+      <button onclick="createAccount()" class="btn">Create Account</button>
       <button onclick="closeModal('signupModal')" class="text-sm mt-2 text-gray-500">Close</button>
     </div>
   </div>
@@ -151,6 +151,21 @@
 
     function closeModal(id) {
       document.getElementById(id).classList.add("hidden");
+    }
+
+    function createAccount() {
+      const name = document.getElementById("signup-name").value;
+      const email = document.getElementById("signup-email").value;
+      const password = document.getElementById("signup-password").value;
+
+      if (!name || !email || !password) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      console.log("Account Created:", { name, email, password });
+      alert("Account successfully created for " + name + "!");
+      closeModal("signupModal");
     }
 
     renderPlants();
